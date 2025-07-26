@@ -7,10 +7,10 @@ bool vscpu(const Sound* snfx) {
 	field block_p1[FIELD_H][FIELD_W];											// player 1 blocks
 	field block_p2[FIELD_H][FIELD_W];											// player 2 blocks
 	register unsigned char i, j;												// loop counters
-	char palette_p1[FIELD_W] = { 0 };											// random chars set of headline for player 1
-	char palette_p2[FIELD_W] = { 0 };											// random chars set of headline for player 2
-	char select_p1 = 0;															// selected char from palette_p1 for player 1
-	char select_p2 = 0;															// selected char from palette_p2 for player 2
+	signed char palette_p1[FIELD_W] = { 0 };									// random chars set of headline for player 1
+	signed char palette_p2[FIELD_W] = { 0 };									// random chars set of headline for player 2
+	signed char select_p1 = 0;													// selected char from palette_p1 for player 1
+	signed char select_p2 = 0;													// selected char from palette_p2 for player 2
 	unsigned char cursor_pos_p1 = 0;											// player 1 cursor position
 	unsigned char cursor_pos_p2 = 0;											// player 1 cursor position
 	char cmd_from_input = CMD_NULL;												// input command. in order to handle gamepad as well.

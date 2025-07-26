@@ -3,7 +3,7 @@
 #include "common.h"
 
 // return selected char
-char spaw_new_row(field block[FIELD_H][FIELD_W], char palette[FIELD_W]) {
+char spaw_new_row(field block[FIELD_H][FIELD_W], signed char palette[FIELD_W]) {
 	char select = 0;
 	for (unsigned char i = 0; i < FIELD_W; i++)
 		if (GetRandomValue(0, 100) > 80) { 										// set letters occurrence rate

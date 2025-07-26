@@ -79,6 +79,14 @@ void *bcmx_callback(void *arg) {
 	pthread_exit(NULL);
 }
 
+/* control background music thread */
+void bcmx_ctl(unsigned char ctr) {
+	bcmx_thread_lock = true;
+	bcmx_thread_ctl = ctr;
+	while(bcmx_thread_lock)
+		WaitTime(0.04f);
+}
+
 int main(void) {
 	typedef struct icon
 	{

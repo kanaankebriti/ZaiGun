@@ -135,8 +135,8 @@ bool arcade(const Sound* snfx) {
 	WaitTime(0.5f);
 */
 	select = spaw_new_row(block, palette);										// spawn first row
-	bcmx_ctl(BCMX_ARCADE_LOAD);
-	bcmx_ctl(BCMX_ARCADE_PLAY);
+	bcmx_ctl(BCMX_ARCADE_LOAD);													// load background music
+	bcmx_ctl(BCMX_ARCADE_PLAY);													// start playing background music
 
 	/*************
 	 * main loop *
@@ -158,7 +158,7 @@ bool arcade(const Sound* snfx) {
 			 * updaing logic *
 			 *****************/
 			//----------------------------------------------------------------------
-			if (GetTime() - delta > 4.f) {
+			if (GetTime() - delta > get_interval_quadratic(score)) {
 				/* move each block upward */
 				for (j = 1; j < FIELD_H; j++)
 					for (i = 0; i < FIELD_W; i++)

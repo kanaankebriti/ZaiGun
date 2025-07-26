@@ -27,6 +27,11 @@
 #define BG_FONT_MIN 10
 #define BG_FONT_MAX 70
 
+/* timings */
+#define MAX_INTERVAL 4.0f														// maximum waiting
+#define MIN_INTERVAL 1.5f														// minimum waiting
+#define SCORE_CAP 100000.0f														// new spawn is score based
+
 /* block fields */
 #define GRIDCOLOR CHARCOAL														// grid color
 #define BLOCK_TYPE_FREE 0
