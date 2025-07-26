@@ -70,10 +70,10 @@ ifeq ($(PLATFORM),linux)
 # --- LINUX ---
     CC       := gcc
     CXX      := g++
-    CFLAGS   := -g -O2 -std=c11 -Wall -Wextra $(INCLUDES)
-    CXXFLAGS := -g -O2 -std=c++11 -Wall -Wextra $(INCLUDES)
+    CFLAGS   := -g -Ofast -std=c11 -Wall -Wextra $(INCLUDES)
+    CXXFLAGS := -g -Ofast -std=c++11 -Wall -Wextra $(INCLUDES)
     ASFLAGS  := -g
-    LDFLAGS  := -Llib/amd64_linux -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+    LDFLAGS  := -Llib/amd64_linux -lraylib
 
 link_rule = $(CXX) $(OBJS) -o $@ $(LDFLAGS)
 
@@ -81,8 +81,8 @@ else ifeq ($(PLATFORM),windows)
 # --- WINDOWS (MinGW) ---
     CC       := x86_64-w64-mingw32-gcc
     CXX      := x86_64-w64-mingw32-g++
-    CFLAGS   := -g -O2 -std=c11 -Wall $(INCLUDES)
-    CXXFLAGS := -g -O2 -std=c++11 -Wall $(INCLUDES)
+    CFLAGS   := -g -Ofast -std=c11 -Wall $(INCLUDES)
+    CXXFLAGS := -g -Ofast -std=c++11 -Wall $(INCLUDES)
     ASFLAGS  := -g
     LDFLAGS  := -Llib/amd64_windows -lraylib -lopengl32 -lgdi32 -lwinmm -static
 
@@ -109,7 +109,7 @@ else ifeq ($(PLATFORM),switch)
 
     # Flags based on your original working Makefile
     ARCH     := -march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
-    CFLAGS   := -g -Wall -O2 -ffunction-sections $(ARCH) -D__SWITCH__ $(INCLUDES) -I$(DEVKITPRO)/portlibs/switch/include -I$(DEVKITPRO)/libnx/include
+    CFLAGS   := -g -Wall -Ofast -ffunction-sections $(ARCH) -D__SWITCH__ $(INCLUDES) -I$(DEVKITPRO)/portlibs/switch/include -I$(DEVKITPRO)/libnx/include
     CXXFLAGS := $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
     ASFLAGS  := -g $(ARCH)
     LDFLAGS  := -specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(BUILD_DIR)/$(TARGET).map \

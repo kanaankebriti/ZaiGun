@@ -67,15 +67,15 @@ void draw_background_letters(Texture bgfont) {
 	return true: continue with main menu
 */
 bool arcade(const Sound* snfx) {
-	char game_state = GAME_STAT_RUN;											// game flow state (run, pause, end)
+	unsigned char game_state = GAME_STAT_RUN;									// game flow state (run, pause, end)
 	int captials[26] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 	field block[FIELD_H][FIELD_W];
 	register unsigned char i, j;												// loop counters
-	char palette[FIELD_W] = { 0 };												// random chars set of headline
+	signed char palette[FIELD_W] = { 0 };										// random chars set of headline
 	char select = 0;															// selected char from palette
 	unsigned char cursor_pos = 0;												// cursor position
-	char cmd_from_input;														// input command. in order to handle gamepad as well.
-	char field_clear_effect = 0;
+	unsigned char cmd_from_input;												// input command. in order to handle gamepad as well.
+	unsigned char field_clear_effect = 0;
 	unsigned long score = 0;
 	double delta = 0;															// keeps time flow. init value ensures immediate start.
 	Vector2 block_pos;				//TODO: perhaps eliminate this to			// temporary position
@@ -145,9 +145,9 @@ bool arcade(const Sound* snfx) {
 	//while (game_state <= GAME_STAT_PAUSE) {	// game_state == run or pause; faster code this way but less clear :(
 
 	#if defined(__SWITCH__)
-		while(game_state <= GAME_STAT_PAUSE)									// consoles don't possess a window manager
+	while(game_state <= GAME_STAT_PAUSE)										// consoles don't possess a window manager
 	#else
-		while(!WindowShouldClose() && game_state <= GAME_STAT_PAUSE)			// game_state == run or pause; faster code this way but less clear :(
+	while(!WindowShouldClose() && game_state <= GAME_STAT_PAUSE)				// game_state == run or pause; faster code this way but less clear :(
 	#endif
 	{
 		/************
@@ -180,7 +180,7 @@ bool arcade(const Sound* snfx) {
 						break;
 					else if ((current_block_letter == BLOCK_TYPE_OCCU) ) {
 						palette[i] = GetRandomValue('A', 'Z');					// save rand char to palette
-						block[j][i].val = palette[i];							// assign rand char to block
+						block[j][i].val = palette[i];							// assign a random character to a block
 						break;													// don't apply to blocks under eliminated block
 					}
 				}
@@ -306,55 +306,57 @@ bool arcade(const Sound* snfx) {
 			unsigned char pause_menu_select = 0;
 
 			#if defined(__SWITCH__)
-				while(game_state == GAME_STAT_PAUSE)							// consoles don't possess a window manager
+			while(game_state == GAME_STAT_PAUSE)								// consoles don't possess a window manager
 			#else
-				while(!WindowShouldClose() && game_state == GAME_STAT_PAUSE)
+			while(!WindowShouldClose() && game_state == GAME_STAT_PAUSE)
 			#endif
 			{
 				/* handle input */
-				cmd_from_input = get_cmd();									// retrives players input
+				cmd_from_input = get_cmd();										// retrives players input
 				//TODO: a unified cursor selection function
 				switch (cmd_from_input) {
-				#if defined(__SWITCH__)
+					#if defined(__SWITCH__)
 					case CMD_CURSOR_DOWN_P1:
-				#else
+					#else
 					case CMD_CURSOR_JLEFT_P2:
-				#endif
-					if(pause_menu_select < PAUSE_MENU_ITEMS_COUNT - 1)
-						pause_menu_select++;
-					else
-						pause_menu_select = 0;									// teleport to top
-					PlaySound(snfx[SNFX_MN]);									// play menu navigation sound effect
-					break;
-				#if defined(__SWITCH__)
-					case CMD_CURSOR_UP_P1:
-				#else
-					case CMD_CURSOR_JRIGHT_P2:
-				#endif
-					if(pause_menu_select > 0)
-						pause_menu_select--;
-					else
-						pause_menu_select = PAUSE_MENU_ITEMS_COUNT - 1;			// teleport to bottom
-					PlaySound(snfx[SNFX_MN]);									// play menu navigation sound effect
-					break;
-				case CMD_ELIMINATE_P1:
-					switch (pause_menu_select)
-					{
-					case 0:		// continue
-						game_state = GAME_STAT_RUN;
-						break;
-					case 1:		// main menu
-						game_state = GAME_STAT_END;
-						break;
-					#if !defined(__SWITCH__)
-						// Note: a console game shall not provide an "exit to OS" option
-						case 2:		// exit to window
-							game_state = GAME_STAT_EXIT;
 					#endif
-					}
-					break;
-				case CMD_PAUSE:
-					game_state = GAME_STAT_RUN;
+						if(pause_menu_select < PAUSE_MENU_ITEMS_COUNT - 1)
+							pause_menu_select++;
+						else
+							pause_menu_select = 0;								// teleport to top
+						PlaySound(snfx[SNFX_MN]);								// play menu navigation sound effect
+						break;
+					#if defined(__SWITCH__)
+					case CMD_CURSOR_UP_P1:
+					#else
+					case CMD_CURSOR_JRIGHT_P2:
+					#endif
+						if(pause_menu_select > 0)
+							pause_menu_select--;
+						else
+							pause_menu_select = PAUSE_MENU_ITEMS_COUNT - 1;		// teleport to bottom
+						PlaySound(snfx[SNFX_MN]);								// play menu navigation sound effect
+						break;
+					case CMD_ELIMINATE_P1:
+						switch (pause_menu_select)
+						{
+						case 0:		// continue
+							game_state = GAME_STAT_RUN;
+							break;
+						case 1:		// main menu
+							game_state = GAME_STAT_END;
+							break;
+						#if !defined(__SWITCH__)
+							// Note: a console game shall not provide an "exit to OS" option
+							case 2:		// exit to window
+								game_state = GAME_STAT_EXIT;
+						#endif
+						}
+					#if !defined(__SWITCH__)									// start button toggeling does not work on nintendo homebrew, results in double input (pressed ounced, twice received)
+						break;
+					case CMD_PAUSE:
+						game_state = GAME_STAT_RUN;
+					#endif
 				}
 				cmd_from_input = CMD_NULL;										// reset for next command
 
@@ -371,15 +373,15 @@ bool arcade(const Sound* snfx) {
 			if(game_state == GAME_STAT_RUN)										// play background music only if game has not been ended
 				bcmx_ctl(BCMX_ARCADE_PLAY);
 
-			#if !defined(__SWITCH__)
-			continue;															// skip break by window manager
-			#endif
+			//#if !defined(__SWITCH__)
+			//continue;															// skip break by window manager
+			//#endif
 		}
 
 		// break by window manager
-		#if !defined(__SWITCH__)
-		game_state = GAME_STAT_EXIT;
-		#endif
+		//#if !defined(__SWITCH__)
+		//game_state = GAME_STAT_EXIT;
+		//#endif
 	}
 	//--------------------------------------------------------------------------
 

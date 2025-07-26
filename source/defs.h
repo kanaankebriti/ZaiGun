@@ -45,7 +45,7 @@
 #define COLOR_P2 DARKROSE														// main color theme use for player 2
 
 /* user input commands */
-#define CMD_NULL 0																// command: nothing! mainly to silence warnings
+#define CMD_NULL 255																// command: nothing! mainly to silence warnings
 #define CMD_CURSOR_RIGHT_P1 1													// command: player 1 cursor move to right
 #define CMD_CURSOR_LEFT_P1 2													// command: player 1 cursor move to left
 #define CMD_CURSOR_UP_P1 3

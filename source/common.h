@@ -4,9 +4,9 @@
 #include <raylib.h>
 
 typedef struct {
-	int x_pos;
-	int y_pos;
-	char val;
+	int x_pos;			// block x position
+	int y_pos;			// block y position
+	signed char val;	// block character. note that 'signed' is required when ARM is targeted.
 } field;
 
 void draw_cursor(unsigned char cursor_pos, unsigned short margin_from_left);
@@ -15,7 +15,7 @@ char spaw_new_row(field block[FIELD_H][FIELD_W], char palette[FIELD_W]);
 //private //void draw_block (int block_x_pos, int block_y_pos, char block_val, Font font, char font_w);
 void draw_blocks(unsigned char cursor_pos_p1, field block[FIELD_H][FIELD_W], Font blkfont, char font_w);
 void draw_frame(Rectangle field_rect , Color fcolor);
-char get_cmd(void);
+unsigned char get_cmd(void);
 void bcmx_ctl(unsigned char ctr);
 void draw_pause_menu(unsigned char pause_menu_cursor);
 
