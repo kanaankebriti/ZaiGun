@@ -1,17 +1,17 @@
 #include <raylib.h>
 #include "defs.h"
+#include "const.h"
 
 void draw_pause_menu(unsigned char pause_menu_cursor) {
-	Rectangle pause_menu_select_rect = {
-		(WIN_W - 256) / 2,
-		#if defined(__SWITCH__)
-			(WIN_H - 64) / 2 + (pause_menu_cursor * 32),
-		#else
-			(WIN_H - 96) / 2 + (pause_menu_cursor * 32),
-		#endif
-		256,
-		30
-	};																			/* cursor rect */
+	Rectangle pause_menu_select_rect;											/* cursor rect */
+	pause_menu_select_rect.x = (WIN_W - 256) / 2;
+	#if defined(__SWITCH__)
+	pause_menu_select_rect.y = (WIN_H - 64) / 2 + (pause_menu_cursor * 32);
+	#else
+	pause_menu_select_rect.y = (WIN_H - 96) / 2 + (pause_menu_cursor * 32);
+	#endif
+	pause_menu_select_rect.width = 256;
+	pause_menu_select_rect.height = 30;
 
 	DrawRectangle((WIN_W - 512) / 2, (WIN_H - 128) / 2, 512, 128, RAYGHOST);	/* pause menu background */
 	#if defined(__SWITCH__)

@@ -1,5 +1,6 @@
 #include "defs.h"
 #include "common.h"
+#include "const.h"
 
 void draw_block (
 	int block_x_pos,

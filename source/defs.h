@@ -12,9 +12,6 @@
 
 #define FPS 60																	/* default framerate */
 
-#define DEFBACKCOLOR DARKGRAY													/* background color */
-#define CURSORCOLCOLOR DARKERGRAY												/* cursor column color */
-
 #define CURSOR_MOV_R 0															/* cursor unit move to right */
 #define CURSOR_MOV_L 1															/* cursor unit move to left */
 #define CURSOR_MOV_U 1															/* cursor move units */
@@ -50,7 +47,7 @@
 #define COLOR_P2 DARKROSE														/* main color theme use for player 2 */
 
 /* user input commands */
-#define CMD_NULL 255																/* command: nothing! mainly to silence warnings */
+#define CMD_NULL 0																/* command: nothing! mainly to silence warnings */
 #define CMD_CURSOR_RIGHT_P1 1													/* command: player 1 cursor move to right */
 #define CMD_CURSOR_LEFT_P1 2													/* command: player 1 cursor move to left */
 #define CMD_CURSOR_UP_P1 3
@@ -78,12 +75,3 @@
 #define GAME_STAT_PAUSE 1														/* game is paused */
 #define GAME_STAT_END 2															/* game is ended */
 #define GAME_STAT_EXIT 3														/* exit to OS */
-
-/* colors */
-#define CHARCOAL	CLITERAL(Color){ 43, 43, 43, 255 }							/* color: CHARCOAL */
-#define CHERENKOV	CLITERAL(Color){ 170, 200, 220, 255 }						/* color: CHERENKOV */
-#define CYAN		CLITERAL(Color){ 0, 255, 255, 255 }	 						/* color: CYAN */
-#define DARKESTGRAY	CLITERAL(Color){ 25, 25, 28, 255 }							/* color: DARKESTGRAY */
-#define DARKERGRAY	CLITERAL(Color){ 35, 35, 35, 255 }							/* color: DARKERGRAY */
-#define DARKROSE	CLITERAL(Color){ 230, 41, 55, 255 }							/* color: DARKROSE */
-#define RAYGHOST	CLITERAL(Color){ 245, 245, 245, 245 }						/* color: RAYGHOST */

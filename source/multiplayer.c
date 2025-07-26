@@ -1,7 +1,11 @@
 #include "defs.h"
 #include "common.h"
+#include "const.h"
 
 bool multiplayer(Sound* snfx) {
+	/*************/
+	/* variables */
+	/*************/
 	char game_state = GAME_STAT_RUN;											/* game flow state (run, pause, end) */
 	int captials[26] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 	field block_p1[FIELD_H][FIELD_W];											/* player 1 blocks */
@@ -32,13 +36,13 @@ bool multiplayer(Sound* snfx) {
 		BLOCK_SIZE * FIELD_H - BLOCK_MARGIN,
 	};																			/* player 2 field frame */
 	const Music multiplayer_background_music = LoadMusicStream(RESOURCE_PATH"4_track_from_heaven.mp3");
-
+	Color bckg_color;															/* RGB background color */
+	unsigned int psum;															/* sum of all palette values. used to determine if it's empty. */
 
 	#if defined(__SWITCH__)
 		char cursor_p1_lck = 0;														/* player 1 analog joystick lock mechanism */
 		char cursor_p2_lck = 0;														/* player 2 analog joystick lock mechanism */
 	#endif
-
 
 	/********
 	 * init *
@@ -177,12 +181,20 @@ bool multiplayer(Sound* snfx) {
 			if (field_clear_bonus_p1) {
 				PlaySound(snfx[SNFX_FCL]);											/* play field cleared sound effect */
 				score -= 5;															/* gradually add score for more satisfaction! */
-				ClearBackground(CLITERAL(Color){ GetRandomValue(0, 255), GetRandomValue(0, 255), GetRandomValue(0, 255), 255 });
+				bckg_color.r = GetRandomValue(0, 255);
+				bckg_color.g = GetRandomValue(0, 255);
+				bckg_color.b = GetRandomValue(0, 255);
+				bckg_color.a = 255;
+				ClearBackground(bckg_color);
 				field_clear_bonus_p1--;
 			} else if (field_clear_bonus_p2) {
 				PlaySound(snfx[SNFX_FCL]);											/* play field cleared sound effect */
 				score += 5;															/* gradually add score for more satisfaction! */
-				ClearBackground(CLITERAL(Color){ GetRandomValue(0, 255), GetRandomValue(0, 255), GetRandomValue(0, 255), 255 });
+				bckg_color.r = GetRandomValue(0, 255);
+				bckg_color.g = GetRandomValue(0, 255);
+				bckg_color.b = GetRandomValue(0, 255);
+				bckg_color.a = 255;
+				ClearBackground(bckg_color);
 				field_clear_bonus_p2--;
 			}
 			else
@@ -247,7 +259,7 @@ bool multiplayer(Sound* snfx) {
 						if (block_p1[j][cursor_pos_p1].val == select_p1) {		/* if hit the correct block */
 							select_p1 = 0;										/* reset select. this will be used later to prevent having an empty palette by chance. */
 							PlaySound(snfx[SNFX_EL]);							/* play elimination sound effect */
-							unsigned int psum = 0;								/* detect empty screen */
+							psum = 0;											/* detect empty screen */
 							score -= 10;
 							block_p1[j][cursor_pos_p1].val = BLOCK_TYPE_FREE;	/* free the block up */
 							palette_p1[cursor_pos_p1] = 0;						/* palette will be assigned later */
@@ -287,7 +299,7 @@ bool multiplayer(Sound* snfx) {
 						if (block_p2[j][cursor_pos_p2].val == select_p2) {		/* if hit the correct block */
 							select_p2 = 0;										/* reset select. this will be used later to prevent having an empty palette by chance. */
 							PlaySound(snfx[SNFX_EL]);							/* play elimination sound effect */
-							unsigned int psum = 0;								/* detect empty screen */
+							psum = 0;											/* detect empty screen */
 							score += 10;
 							block_p2[j][cursor_pos_p2].val = BLOCK_TYPE_FREE;	/* free the block up */
 							palette_p2[cursor_pos_p2] = 0;						/* palette will be assigned later */

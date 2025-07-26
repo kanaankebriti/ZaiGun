@@ -1,5 +1,6 @@
 #include "defs.h"
 #include "common.h"
+#include "const.h"
 
 void draw_cursor(unsigned char cursor_pos, unsigned short margin_from_left) {
 	/* cursor at position 0 */

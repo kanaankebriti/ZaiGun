@@ -1,7 +1,11 @@
 #include "defs.h"
 #include "common.h"
+#include "const.h"
 
-bool vscpu(Sound* snfx) {
+bool multiplayer(Sound* snfx) {
+	/*************/
+	/* variables */
+	/*************/
 	char game_state = GAME_STAT_RUN;											/* game flow state (run, pause, end) */
 	int captials[26] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 	field block_p1[FIELD_H][FIELD_W];											/* player 1 blocks */
@@ -32,12 +36,13 @@ bool vscpu(Sound* snfx) {
 		BLOCK_SIZE * FIELD_H - BLOCK_MARGIN,
 	};																			/* player 2 field frame */
 	const Music multiplayer_background_music = LoadMusicStream(RESOURCE_PATH"4_track_from_heaven.mp3");
+	Color bckg_color;															/* RGB background color */
+	unsigned int psum;															/* sum of all palette values. used to determine if it's empty. */
 
 	#if defined(__SWITCH__)
 		char cursor_p1_lck = 0;														/* player 1 analog joystick lock mechanism */
 		char cursor_p2_lck = 0;														/* player 2 analog joystick lock mechanism */
 	#endif
-
 
 	/********
 	 * init *
@@ -96,6 +101,7 @@ bool vscpu(Sound* snfx) {
 	}
 	PlaySound(snfx[SNFX_EL]);													play elimination sound effect as the game begins!
 	WaitTime(0.5f); */
+
 	select_p1 = spaw_new_row(block_p1, palette_p1);								/* spawn first row for player 1 */
 	select_p2 = spaw_new_row(block_p2, palette_p2);								/* spawn first row for player 2 */
 	PlayMusicStream(multiplayer_background_music);								/* start playing background music */
@@ -127,7 +133,7 @@ bool vscpu(Sound* snfx) {
 					}
 				/* spawn new blocks for both players */
 				for (i = 0; i < FIELD_W; i++)
-					if (GetRandomValue(0, 100) > 80) {								/* set letters occurrence rate */
+					if (GetRandomValue(0, 100) > 80) {							/* set letters occurrence rate */
 						block_p1[FIELD_H - 1][i].val = BLOCK_TYPE_OCCU;
 						block_p2[FIELD_H - 1][i].val = BLOCK_TYPE_OCCU;
 					} else {
@@ -142,25 +148,25 @@ bool vscpu(Sound* snfx) {
 			/* player 1 */
 			for (i = 0; i < FIELD_W; i++)
 				for (j = 1; j < FIELD_H; j++) {
-					char current_block_letter = block_p1[j][i].val;					/* operate on this block */
-					if (current_block_letter >= 'A')								/* skip blocks under headline */
+					char current_block_letter = block_p1[j][i].val;				/* operate on this block */
+					if (current_block_letter >= 'A')							/* skip blocks under headline */
 						break;
 					else if ((current_block_letter == BLOCK_TYPE_OCCU) ) {
-						palette_p1[i] = GetRandomValue('A', 'Z');					/* save rand char to palette */
-						block_p1[j][i].val = palette_p1[i];							/* assign rand char to block */
-						break;														/* don't apply to blocks under eliminated block */
+						palette_p1[i] = GetRandomValue('A', 'Z');				/* save rand char to palette */
+						block_p1[j][i].val = palette_p1[i];						/* assign rand char to block */
+						break;													/* don't apply to blocks under eliminated block */
 					}
 				}
 			/* player 2 */
 			for (i = 0; i < FIELD_W; i++)
 				for (j = 1; j < FIELD_H; j++) {
-					char current_block_letter = block_p2[j][i].val;					/* operate on this block */
-					if (current_block_letter >= 'A')								/* skip blocks under headline */
+					char current_block_letter = block_p2[j][i].val;				/* operate on this block */
+					if (current_block_letter >= 'A')							/* skip blocks under headline */
 						break;
 					else if ((current_block_letter == BLOCK_TYPE_OCCU) ) {
-						palette_p2[i] = GetRandomValue('A', 'Z');					/* save rand char to palette */
-						block_p2[j][i].val = palette_p2[i];							/* assign rand char to block */
-						break;														/* don't apply to blocks under eliminated block */
+						palette_p2[i] = GetRandomValue('A', 'Z');				/* save rand char to palette */
+						block_p2[j][i].val = palette_p2[i];						/* assign rand char to block */
+						break;													/* don't apply to blocks under eliminated block */
 					}
 				}
 			UpdateMusicStream(multiplayer_background_music);					/* update background music */
@@ -175,12 +181,20 @@ bool vscpu(Sound* snfx) {
 			if (field_clear_bonus_p1) {
 				PlaySound(snfx[SNFX_FCL]);											/* play field cleared sound effect */
 				score -= 5;															/* gradually add score for more satisfaction! */
-				ClearBackground(CLITERAL(Color){ GetRandomValue(0, 255), GetRandomValue(0, 255), GetRandomValue(0, 255), 255 });
+				bckg_color.r = GetRandomValue(0, 255);
+				bckg_color.g = GetRandomValue(0, 255);
+				bckg_color.b = GetRandomValue(0, 255);
+				bckg_color.a = 255;
+				ClearBackground(bckg_color);
 				field_clear_bonus_p1--;
 			} else if (field_clear_bonus_p2) {
 				PlaySound(snfx[SNFX_FCL]);											/* play field cleared sound effect */
 				score += 5;															/* gradually add score for more satisfaction! */
-				ClearBackground(CLITERAL(Color){ GetRandomValue(0, 255), GetRandomValue(0, 255), GetRandomValue(0, 255), 255 });
+				bckg_color.r = GetRandomValue(0, 255);
+				bckg_color.g = GetRandomValue(0, 255);
+				bckg_color.b = GetRandomValue(0, 255);
+				bckg_color.a = 255;
+				ClearBackground(bckg_color);
 				field_clear_bonus_p2--;
 			}
 			else
@@ -245,7 +259,7 @@ bool vscpu(Sound* snfx) {
 						if (block_p1[j][cursor_pos_p1].val == select_p1) {		/* if hit the correct block */
 							select_p1 = 0;										/* reset select. this will be used later to prevent having an empty palette by chance. */
 							PlaySound(snfx[SNFX_EL]);							/* play elimination sound effect */
-							unsigned int psum = 0;								/* detect empty screen */
+							psum = 0;											/* detect empty screen */
 							score -= 10;
 							block_p1[j][cursor_pos_p1].val = BLOCK_TYPE_FREE;	/* free the block up */
 							palette_p1[cursor_pos_p1] = 0;						/* palette will be assigned later */
@@ -285,7 +299,7 @@ bool vscpu(Sound* snfx) {
 						if (block_p2[j][cursor_pos_p2].val == select_p2) {		/* if hit the correct block */
 							select_p2 = 0;										/* reset select. this will be used later to prevent having an empty palette by chance. */
 							PlaySound(snfx[SNFX_EL]);							/* play elimination sound effect */
-							unsigned int psum = 0;								/* detect empty screen */
+							psum = 0;											/* detect empty screen */
 							score += 10;
 							block_p2[j][cursor_pos_p2].val = BLOCK_TYPE_FREE;	/* free the block up */
 							palette_p2[cursor_pos_p2] = 0;						/* palette will be assigned later */
@@ -380,8 +394,8 @@ bool vscpu(Sound* snfx) {
 				draw_frame(field_frame_rect_p2, COLOR_P2);						/* draw filed frame for player 2 */
 				draw_blocks(cursor_pos_p1, block_p1, blkfont, font_w);			/* draw field blocks for player 1 */
 				draw_blocks(cursor_pos_p2, block_p2, blkfont, font_w);			/* draw field blocks for player 2 */
-				draw_cursor(cursor_pos_p1, LEFT_MARGIN);						/* draw cursor for player 1 */
-				draw_cursor(cursor_pos_p2, LEFT_MARGIN);						/* draw cursor for player 2 */
+				draw_cursor(cursor_pos_p1, LEFT_MARGIN_MUL_P1);					/* draw cursor for player 1 */
+				draw_cursor(cursor_pos_p2, LEFT_MARGIN_MUL_P2);					/* draw cursor for player 2 */
 				draw_pause_menu(pause_menu_select);								/* draw pause menu */
 				EndDrawing();
 			}

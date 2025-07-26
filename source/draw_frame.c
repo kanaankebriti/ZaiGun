@@ -1,5 +1,7 @@
+#include <raylib.h>
 #include "defs.h"
 #include "common.h"
+#include "const.h"
 
 /* draw a frame around a rect */
 void draw_frame(Rectangle field_rect , Color fcolor) {

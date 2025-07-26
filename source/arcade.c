@@ -1,5 +1,6 @@
 #include <math.h>
 #include "defs.h"
+#include "const.h"
 #include "common.h"
 
 typedef struct {
@@ -16,19 +17,23 @@ particle letters[BG_MAX_LETTERS];
 
 void InitializeLetters() {
 	unsigned char i;
+	float angle, speed;
 	for (i = 0; i < BG_MAX_LETTERS; i++) {
 		letters[i].letter = GetRandomValue(0, 25) * 128;						/* Random letter A-Z from texture */
 		letters[i].angle = GetRandomValue(0, 359);								/* Random angle */
 		letters[i].angular_speed = GetRandomValue(-8, 8);						/* Random rotation speed */
-		letters[i].position = (Vector2){ GetRandomValue(0, WIN_W), WIN_H / 2 };
+		letters[i].position.x = GetRandomValue(0, WIN_W);
+		letters[i].position.y = WIN_H / 2;
 		/* letters[i].position = (Vector2){ WIN_W / 2, WIN_H / 2 }; */
 		letters[i].size = GetRandomValue(BG_FONT_MIN, BG_FONT_MAX);				/* Random font size */
 		/*if(((letters[i].size) % 2) == 0) */
 			/*letters[i].size++; */
-		letters[i].origin = (Vector2){letters[i].size / 2, letters[i].size / 2};/* rotation axis */
+		/* rotation axis */
+		letters[i].origin.x = letters[i].size / 2;
+		letters[i].origin.y = letters[i].size / 2;
 		/* Random angle in radians */
-		float angle = (float)GetRandomValue(0, 359) * (PI / 180.f);
-		float speed = (float)GetRandomValue(200, 350);							/* high initial speec */
+		angle = (float)GetRandomValue(0, 359) * (PI / 180.f);
+		speed = (float)GetRandomValue(200, 350);								/* high initial speec */
 		letters[i].velocity.x = cos(angle) * speed;
 		letters[i].velocity.y = sin(angle) * speed;
 	}
@@ -36,6 +41,7 @@ void InitializeLetters() {
 
 void update_background_letters(float deltaTime) {
 	unsigned char i;
+	float angle, speed;
 	for (i = 0; i < BG_MAX_LETTERS; i++) {
 		letters[i].position.x += letters[i].velocity.x * deltaTime;
 		letters[i].position.y += letters[i].velocity.y * deltaTime;
@@ -43,10 +49,12 @@ void update_background_letters(float deltaTime) {
 		/* Check if the letter is outside the screen bounds */
 		if (letters[i].position.x < -BG_FONT_MAX || letters[i].position.x > WIN_W + BG_FONT_MAX ||
 			letters[i].position.y < -BG_FONT_MAX || letters[i].position.y > WIN_H + BG_FONT_MAX) {
-			letters[i].position = (Vector2){ WIN_W / 2, WIN_H / 2 };			/* reset position */
+			/* reset position */
+			letters[i].position.x = WIN_W / 2;
+			letters[i].position.y = WIN_H / 2;
 			letters[i].angle = 0;												/* reset angle */
-			float angle = (float)GetRandomValue(0, 359) * (PI / 180);			/* random angle in radians */
-			float speed = (float)GetRandomValue(80, 350);						/* random speed */
+			angle = (float)GetRandomValue(0, 359) * (PI / 180);					/* random angle in radians */
+			speed = (float)GetRandomValue(80, 350);								/* random speed */
 			letters[i].velocity.x = cos(angle) * speed;							/* new random v_x */
 			letters[i].velocity.y = sin(angle) * speed;							/* new radom v_y */
 		}
@@ -55,21 +63,37 @@ void update_background_letters(float deltaTime) {
 
 void draw_background_letters(Texture bgfont) {
 	unsigned char i;
-	for (i = 0; i < BG_MAX_LETTERS; i++)
+	Rectangle letter_rect_src, letter_rect_dst;
+
+	for (i = 0; i < BG_MAX_LETTERS; i++) {
+		letter_rect_src.x = letters[i].letter;
+		letter_rect_src.y = 0;
+		letter_rect_src.width = 128;
+		letter_rect_src.height = 128;
+
+		letter_rect_dst.x = letters[i].position.x;
+		letter_rect_dst.y = letters[i].position.y;
+		letter_rect_dst.width = letters[i].size;
+		letter_rect_dst.height = letters[i].size;
+
 		DrawTexturePro(
 			bgfont,
-			(Rectangle){letters[i].letter, 0, 128, 128},
-			(Rectangle){letters[i].position.x, letters[i].position.y, letters[i].size, letters[i].size},
+			letter_rect_src,
+			letter_rect_dst,
 			letters[i].origin,
 			letters[i].angle,
 			CHERENKOV
 		);
+	}
 }
 
-/*	return false: close game *
+/*	return false: close game
 	return true: continue with main menu
 */
 bool arcade(Sound* snfx) {
+	/*************/
+	/* variables */
+	/*************/
 	unsigned char game_state = GAME_STAT_RUN;									/* game flow state (run, pause, end) */
 	int captials[26] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 	field block[FIELD_H][FIELD_W];
@@ -80,6 +104,7 @@ bool arcade(Sound* snfx) {
 	unsigned char cmd_from_input;												/* input command. in order to handle gamepad as well. */
 	unsigned char field_clear_effect = 0;
 	unsigned long score = 0;
+	unsigned int psum;															/* sum of all palette values. used to determine if it's empty. */
 	double delta = 0;															/* keeps time flow. init value ensures immediate start. */
 	Vector2 block_pos;				/*TODO: perhaps eliminate this to			// temporary position */
 	const Rectangle field_frame_rect = {
@@ -89,6 +114,7 @@ bool arcade(Sound* snfx) {
 		BLOCK_SIZE * FIELD_H - BLOCK_MARGIN,
 	};
 	const Music arcade_background_music = LoadMusicStream(RESOURCE_PATH"b-pop.mp3");
+	Color bckg_color;															/* RGB background color */
 
 	/********
 	 * init *
@@ -160,7 +186,7 @@ bool arcade(Sound* snfx) {
 			 * updaing logic *
 			 *****************/
 			/*------------------------------------------------------------------ */
-			if (GetTime() - delta > get_interval_quadratic(score)) {
+			if (GetTime() - delta > get_interval_linear(score)) {
 				/* move each block upward */
 				for (j = 1; j < FIELD_H; j++)
 					for (i = 0; i < FIELD_W; i++)
@@ -200,7 +226,11 @@ bool arcade(Sound* snfx) {
 			if (field_clear_effect) {
 				PlaySound(snfx[SNFX_FCL]);										/* play field cleared sound effect */
 				score += 100;													/* gradually add score for more satisfaction! */
-				ClearBackground(CLITERAL(Color){ GetRandomValue(0, 255), GetRandomValue(0, 255), GetRandomValue(0, 255), 255 });
+				bckg_color.r = GetRandomValue(0, 255);
+				bckg_color.g = GetRandomValue(0, 255);
+				bckg_color.b = GetRandomValue(0, 255);
+				bckg_color.a = 255;
+				ClearBackground(bckg_color);
 				field_clear_effect--;
 			} else
 				ClearBackground(DEFBACKCOLOR);
@@ -273,7 +303,7 @@ bool arcade(Sound* snfx) {
 						if (block[j][cursor_pos].val == select) {				/* if hit the correct block */
 							select = 0;											/* reset select. this will be used later to prevent having an empty palette by chance. */
 							PlaySound(snfx[SNFX_EL]);							/* play elimination sound effect */
-							unsigned int psum = 0;								/* detect empty screen */
+							psum = 0;											/* detect empty screen */
 							score += 10;
 							block[j][cursor_pos].val = BLOCK_TYPE_FREE;			/* free the block up */
 							palette[cursor_pos] = 0;							/* palette will be assigned later */
