@@ -3,7 +3,7 @@
 
 void draw_cursor(unsigned char cursor_pos, unsigned short margin_from_left) {
 	/* cursor at position 0 */
-	Vector2 cursor_v[3] = {														// cursor polygon
+	Vector2 cursor_v[3] = {														/* cursor polygon */
 		/* v0________v2
 			\		 /
 			 \		/
@@ -12,9 +12,9 @@ void draw_cursor(unsigned char cursor_pos, unsigned short margin_from_left) {
 				\/
 				v1
 		*/
-		{0.3 * BLOCK_SIZE, TOP_MARGIN - 25},									// v0
-		{BLOCK_SIZE / 2, TOP_MARGIN - 25 + BLOCK_SIZE / 2},						// v1
-		{BLOCK_SIZE - 0.3 * BLOCK_SIZE, TOP_MARGIN - 25}						// v2
+		{0.3 * BLOCK_SIZE, TOP_MARGIN - 25},									/* v0 */
+		{BLOCK_SIZE / 2, TOP_MARGIN - 25 + BLOCK_SIZE / 2},						/* v1 */
+		{BLOCK_SIZE - 0.3 * BLOCK_SIZE, TOP_MARGIN - 25}						/* v2 */
 	};
 
 	/* move cursor to right as necessary */

@@ -9,12 +9,12 @@ void draw_block (
 	char font_w)
 {
 	char current_block_letter = block_val;
-	Vector2 block_pos;				//TODO: perhaps eliminate this to			// temporary position
+	Vector2 block_pos;				/*TODO: perhaps eliminate this to			// temporary position */
 	block_pos.x = block_x_pos + (font_w) / 2;
 	block_pos.y = block_y_pos;
 
 	switch (current_block_letter) {
-	case BLOCK_TYPE_FREE:														// unoccupied block
+	case BLOCK_TYPE_FREE:														/* unoccupied block */
 		DrawRectangle(
 			block_x_pos,
 			block_y_pos,
@@ -23,7 +23,7 @@ void draw_block (
 			BLACK
 		);
 						break;
-	case BLOCK_TYPE_OCCU:														// occupied block
+	case BLOCK_TYPE_OCCU:														/* occupied block */
 		DrawRectangle(
 			block_x_pos,
 			block_y_pos,
@@ -32,21 +32,21 @@ void draw_block (
 			LIGHTGRAY
 		);
 		break;
-	default:																	// fully assigned block
+	default:																	/* fully assigned block */
 		DrawRectangle(
 			block_x_pos,
 			block_y_pos,
 			BLOCK_SIZE - BLOCK_MARGIN,
 			BLOCK_SIZE - BLOCK_MARGIN,
 			RAYWHITE
-		);																		// block background
+		);																		/* block background */
 		DrawTextCodepoint(
 			font,
 			current_block_letter,
 			block_pos,
 			BLOCK_SIZE,
 			BLUE
-		);																		// block letter
+		);																		/* block letter */
 	}
 }
 

@@ -1,0 +1,13 @@
+{
+	"files.associations": {
+		"pthread.h": "c",
+		"switch.h": "c",
+		"raymath.h": "c",
+		"prototypes.h": "c",
+		"defs.h": "c",
+		"raylib.h": "c",
+		"common.h": "c",
+		"atomic": "c",
+		"stdatomic.h": "c"
+	}
+}

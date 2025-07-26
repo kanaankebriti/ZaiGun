@@ -9,9 +9,9 @@ void draw_frame(Rectangle field_rect , Color fcolor) {
 			4,
 			FIELD_BORDER_WIDTH,
 			fcolor
-		);																		// frame
+		);																		/* frame */
 	DrawRectangleRec(
 		field_rect,
 		CHARCOAL
-	);																			// grid
+	);																			/* grid */
 }

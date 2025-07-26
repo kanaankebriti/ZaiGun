@@ -70,7 +70,7 @@ ifeq ($(PLATFORM),linux)
 # --- LINUX ---
     CC       := gcc
     CXX      := g++
-    CFLAGS   := -g -Ofast -std=c11 -Wall -Wextra $(INCLUDES)
+    CFLAGS   := -g -Ofast -std=c89 -Wall -Wextra $(INCLUDES)
     CXXFLAGS := -g -Ofast -std=c++11 -Wall -Wextra $(INCLUDES)
     ASFLAGS  := -g
     LDFLAGS  := -Llib/amd64_linux -lraylib
