@@ -23,11 +23,12 @@ int main(void) {
 	signed char bckg_pos_x = -64;												/* background moves in a cycle */
 
 	/* floating-point types */
-	double t;																	/* time for pulsing */
+	double t;																	/* time for animations */
 	float pulse;																/* scale multiplier for box pulse */
 	float moveSpeed = 0.2f;														/* box lerp speed */
 	float scaleSpeed = 0.2f;													/* icon lerp speed */
 	float tx, ty, tw;															/* target frame values */
+	float bounce;																/* icon bounce offset */
 
 	/* arrays and structs */
 	float icon_scales[NUM_OF_ICONS];											/* per-icon scale */
@@ -81,7 +82,6 @@ int main(void) {
 		bckg_txt = LoadTexture(RESOURCE_PATH"bckg_1280_720.png");
 	#else
 		bckg_txt = LoadTexture(RESOURCE_PATH"bckg_1280_720.png");
-		/*bckg_txt = LoadTexture(RESOURCE_PATH"bckg_1024_768.png"); */
 	#endif
 
 	/* load & start background music */
@@ -111,7 +111,6 @@ int main(void) {
 		 * handle input *
 		 ****************/
 		char cmd = get_cmd();
-
 		switch (cmd) {
 			#if defined(__SWITCH__)
 			case CMD_CURSOR_RIGHT_P1:
@@ -123,7 +122,6 @@ int main(void) {
 					PlaySound(snfx[SNFX_MN]);									/* play menu navigation sound effect */
 				}
 				break;
-
 			#if defined(__SWITCH__)
 			case CMD_CURSOR_LEFT_P1:
 			#else
@@ -134,10 +132,9 @@ int main(void) {
 					PlaySound(snfx[SNFX_MN]);									/* play menu navigation sound effect */
 				}
 				break;
-
 			case CMD_ELIMINATE_P1:
 				StopMusicStream(main_menu_background_music);
-				switch (selected_item) {			 /* execute game */
+				switch (selected_item) {
 					case 0: close_to_os = arcade(snfx);	break;
 					case 1: close_to_os = multiplayer(snfx);break;
 					case 2: close_to_os = vscpu(snfx);	  break;
@@ -145,38 +142,31 @@ int main(void) {
 				PlayMusicStream(main_menu_background_music);
 				break;
 		}
-		/*--------------------------------------------------------------------*/
 
-		/*****************/
-		/* updating logic */
-		/*****************/
-		/* update background position, making it move. */
+		/* update background position */
 		if (bckg_pos_x >= 0)
 			bckg_pos_x = -64;
 		else
 			bckg_pos_x++;
-
-		if (close_to_os)
-			break;
-
+		if (close_to_os) break;
 		UpdateMusicStream(main_menu_background_music);							/* update background music */
 
-		/* pulsing select_box parameters */
-		t	 = GetTime();														/* current time */
-		pulse = 0.03f * (float)sin(t * 8.0) + 1.03f;							/* 1.0 → 1.06 */
-		select_box_color.a =
-			(unsigned char)(140.0f + 60.0f * (float)sin(t * 6.0f));				/* glow alpha */
+		/* animation parameters */
+		t = GetTime();
+		pulse = 0.015f * (float)sin(t * 12.0) + 1.05f;							/* selector dimension pulse */
+		select_box_color.a = (unsigned char)(180.0f + 25.0f * (float)sin(t * 10.0f));	/* selector glow pulse */
+		bounce = 4.0f * (float)sin(t * 3.0);									/* ±4px vertical bounce */
 
-		/* compute and lerp current_rec toward target without extra scope */
+		/* lerp select box frame toward selected icon */
 		tx = main_menu_item[selected_item].pos_x - FIELD_BORDER_WIDTH/2;
-		ty = main_menu_item[selected_item].pos_y - FIELD_BORDER_WIDTH/2;
+		ty = main_menu_item[selected_item].pos_y - FIELD_BORDER_WIDTH/2 + (int)bounce;
 		tw = MAIN_MENU_ICON_WH + FIELD_BORDER_WIDTH;
 		current_rec.x	  += (tx - current_rec.x) * moveSpeed;
 		current_rec.y	  += (ty - current_rec.y) * moveSpeed;
 		current_rec.width  += (tw - current_rec.width) * moveSpeed;
-		current_rec.height += (tw - current_rec.height) * moveSpeed;
+		current_rec.height += (tw - current_rec.height)* moveSpeed;
 
-		/* lerp icon scales toward target size */
+		/* lerp icon scales */
 		for (i = 0; i < NUM_OF_ICONS; i++) {
 			float targetScale = (i == selected_item) ? 1.05f : 1.0f;
 			icon_scales[i] += (targetScale - icon_scales[i]) * scaleSpeed;
@@ -189,9 +179,9 @@ int main(void) {
 		ClearBackground(DEFBACKCOLOR);
 		DrawTexture(bckg_txt, bckg_pos_x, 0, WHITE);							/* draw moving background */
 
-		/* derive and draw pulsating highlight directly from current_rec */
+		/* draw pulsating and bouncing highlight */
 		selected_rec.x = current_rec.x - (current_rec.width * (pulse - 1.0f) * 0.5f);
-		selected_rec.y = current_rec.y - (current_rec.height * (pulse - 1.0f) * 0.5f);
+		selected_rec.y = current_rec.y - (current_rec.height* (pulse - 1.0f) * 0.5f);
 		selected_rec.width  = (int)(current_rec.width  * pulse);
 		selected_rec.height = selected_rec.width;
 		DrawRectangleRoundedLinesEx(
@@ -202,13 +192,13 @@ int main(void) {
 			select_box_color
 		);																		/* draw pulsating select box */
 
-		/* draw all menu icons */
+		/* draw all menu icons with bounce */
 		for (i = 0; i < NUM_OF_ICONS; i++) {
 			Vector2 pos;
 			float   scale = icon_scales[i];
-			/* center scaled icons */
-			pos.x = main_menu_item[i].pos_x + (MAIN_MENU_ICON_WH * (1.0f - scale) * 0.5f);
-			pos.y = main_menu_item[i].pos_y + (MAIN_MENU_ICON_WH * (1.0f - scale) * 0.5f);
+			pos.x = main_menu_item[i].pos_x + (MAIN_MENU_ICON_WH*(1.0f-scale)*0.5f);
+			pos.y = main_menu_item[i].pos_y + (MAIN_MENU_ICON_WH*(1.0f-scale)*0.5f)
+					+ ((i==selected_item)? bounce : 0);
 			DrawTextureEx(
 				main_menu_item[i].txt,
 				pos,
@@ -219,9 +209,7 @@ int main(void) {
 		}
 
 		EndDrawing();
-		/*--------------------------------------------------------------------*/
 	}
-	/*------------------------------------------------------------------------*/
 
 	/********** */
 	/* teardown */
