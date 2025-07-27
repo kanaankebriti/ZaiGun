@@ -2,7 +2,7 @@
 #include "common.h"
 #include "const.h"
 
-bool multiplayer(Sound* snfx) {
+bool vscpu(Sound* snfx) {
 	/*************/
 	/* variables */
 	/*************/

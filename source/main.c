@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <math.h>
 #include "common.h"
 #include "const.h"
 
@@ -23,6 +24,9 @@ int main(void) {
 	Icon main_menu_item[NUM_OF_ICONS];											/* main menu icons */
 	Texture bckg_txt;															/* background texture */
 	Music main_menu_background_music;											/* background music */
+	double t;																	/* time for pulsing */
+	float pulse;																/* scale multiplier */
+	Color select_box_color;
 	/*------------------------------------------------------------------------*/
 
 	/********/
@@ -37,9 +41,6 @@ int main(void) {
 	#if !defined(__SWITCH__)
 	SetExitKey(0);																/* escape from ESC death trap of WindowShouldClose */
 	#endif
-
-	selected_rec.height = MAIN_MENU_ICON_WH + FIELD_BORDER_WIDTH;
-	selected_rec.width = MAIN_MENU_ICON_WH + FIELD_BORDER_WIDTH;
 
 	/* load textures and populate icons */
 	main_menu_item[0].pos_x = 50;
@@ -78,6 +79,7 @@ int main(void) {
 
 	main_menu_background_music = LoadMusicStream(RESOURCE_PATH"i-music.mp3");
 	PlayMusicStream(main_menu_background_music);								/* start playing background music */
+	select_box_color = RED;														/* assign select_box color */
 	/*------------------------------------------------------------------------*/
 
 	/*************
@@ -146,6 +148,19 @@ int main(void) {
 			break;
 
 		UpdateMusicStream(main_menu_background_music);							/* update background music */
+
+		/* pulsing select_box */
+		t	 = GetTime();
+		pulse = 0.03f * (float)sin(t * 8.0) + 1.03f;							/* 1.0 → 1.06 */
+		select_box_color.a = (unsigned char)(140.0f + 60.0f * (float)sin(t * 6.0f));	/* glow alpha */
+
+		/* scale & alpha highlight */
+		selected_rec.x = main_menu_item[selected_item].pos_x - FIELD_BORDER_WIDTH / 2;
+		selected_rec.y = main_menu_item[selected_item].pos_y - FIELD_BORDER_WIDTH / 2;
+		selected_rec.x -= selected_rec.width  * (pulse - 1.0f) * 0.5f;
+		selected_rec.y -= selected_rec.height * (pulse - 1.0f) * 0.5f;
+		selected_rec.width = (MAIN_MENU_ICON_WH + FIELD_BORDER_WIDTH) * pulse;
+		selected_rec.height = selected_rec.width;
 		/*--------------------------------------------------------------------*/
 
 		/***********/
@@ -153,10 +168,14 @@ int main(void) {
 		/***********/
 		BeginDrawing();
 		ClearBackground(DEFBACKCOLOR);
-		DrawTexture(bckg_txt, bckg_pos_x, 0, WHITE);
-		selected_rec.x = main_menu_item[selected_item].pos_x - FIELD_BORDER_WIDTH / 2;
-		selected_rec.y = main_menu_item[selected_item].pos_y - FIELD_BORDER_WIDTH / 2;
-		draw_frame(selected_rec, RED);
+		DrawTexture(bckg_txt, bckg_pos_x, 0, WHITE);							/* draw moving background */
+		DrawRectangleRoundedLinesEx(
+			selected_rec,
+			FRAME_ROUNDNESS,
+			4,
+			FIELD_BORDER_WIDTH,
+			select_box_color
+		);																		/* draw select box around icons*/
 		/* draw all menu icons */
 		for(i = 0; i < NUM_OF_ICONS; i++)
 			DrawTexture(
@@ -170,6 +189,9 @@ int main(void) {
 	}
 	/*------------------------------------------------------------------------*/
 
+	/********** */
+	/* teardown */
+	/********** */
 	#if defined(__SWITCH__)
 	romfsExit();
 	#endif
