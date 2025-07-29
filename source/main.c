@@ -85,7 +85,7 @@ int main(void) {
 	#endif
 
 	/* load & start background music */
-	main_menu_background_music = LoadMusicStream(RESOURCE_PATH"i-music.mp3");
+	main_menu_background_music = LoadMusicStream(RESOURCE_PATH"bgm_game_cusA_2.dspadpcm.mp3");
 	PlayMusicStream(main_menu_background_music);								/* start playing background music */
 	select_box_color = RED;														/* assign select_box color */
 

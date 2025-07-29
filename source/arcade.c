@@ -39,12 +39,14 @@ void InitializeLetters() {
 	}
 }
 
-void update_background_letters(float deltaTime) {
+void update_background_letters(/* float deltaTime */) {
 	unsigned char i;
 	float angle, speed;
 	for (i = 0; i < BG_MAX_LETTERS; i++) {
-		letters[i].position.x += letters[i].velocity.x * deltaTime;
-		letters[i].position.y += letters[i].velocity.y * deltaTime;
+		/* letters[i].position.x += letters[i].velocity.x * deltaTime; */
+		/* letters[i].position.y += letters[i].velocity.y * deltaTime; */
+		letters[i].position.x += letters[i].velocity.x * BG_LETTERS_VEL;
+		letters[i].position.y += letters[i].velocity.y * BG_LETTERS_VEL;
 		letters[i].angle += letters[i].angular_speed;
 		/* Check if the letter is outside the screen bounds */
 		if (letters[i].position.x < -BG_FONT_MAX || letters[i].position.x > WIN_W + BG_FONT_MAX ||
@@ -113,7 +115,7 @@ bool arcade(Sound* snfx) {
 		BLOCK_SIZE * FIELD_W - BLOCK_MARGIN,
 		BLOCK_SIZE * FIELD_H - BLOCK_MARGIN,
 	};
-	const Music arcade_background_music = LoadMusicStream(RESOURCE_PATH"b-pop.mp3");
+	const Music arcade_background_music = LoadMusicStream(RESOURCE_PATH"bgm_game_def_1.dspadpcm.mp3");
 	Color bckg_color;															/* RGB background color */
 
 	/********
@@ -141,30 +143,30 @@ bool arcade(Sound* snfx) {
 			block[j][i].val = BLOCK_TYPE_FREE;
 		}
 
-	InitializeLetters();
 	/* intro waiting */
-	/*for (signed char wait = 3; wait >= 0; wait--) {							signed is required by arm64!
+	for (select = 3; select >= 0; select--) {									/* note that select variable is used in order to reduce memory usage!*/
 		BeginDrawing();
 		ClearBackground(DEFBACKCOLOR);
-		draw_frame(field_frame_rect, CYAN);										draw frame around the field
-		draw_blocks(cursor_pos, block, blkfont, font_w);						draw field
-		draw_cursor(cursor_pos, LEFT_MARGIN);									draw cursor for player 1
+		draw_frame(field_frame_rect, CYAN);										/* draw frame around the field */
+		draw_blocks(cursor_pos, block, blkfont, font_w);						/* draw field */
+		draw_cursor(cursor_pos, LEFT_MARGIN);									/* draw cursor for player 1 */
 		DrawText(
-			TextFormat("%d", wait),
-			LEFT_MARGIN + (FIELD_W * BLOCK_SIZE) / 2 - 2 * font_w,				horizontal alignment
-			TOP_MARGIN + (FIELD_W * BLOCK_SIZE) / 2 + 100,						vertical alignment
+			TextFormat("%d", select),
+			LEFT_MARGIN + (FIELD_W * BLOCK_SIZE) / 2 - 2 * font_w,				/* horizontal alignment */
+			TOP_MARGIN + (FIELD_W * BLOCK_SIZE) / 2 + 100,						/* vertical alignment */
 			100,
 			DARKROSE
-		);																		draw countdown
+		);																		/* draw countdown */
 		EndDrawing();
-		PlaySound(snfx[SNFX_WA]);												play wait sound effect
+		PlaySound(snfx[SNFX_WA]);												/* play wait sound effect */
 		WaitTime(1.f);
 	}
-	PlaySound(snfx[SNFX_EL]);													play elimination sound effect as the game begins!
-	WaitTime(0.5f);
-	*/
+	PlaySound(snfx[SNFX_EL]);													/* play elimination sound effect as the game begins! */
+	WaitTime(.5f);
+
 	PlayMusicStream(arcade_background_music);									/* start playing background music */
 	select = spaw_new_row(block, palette);										/* spawn first row */
+	InitializeLetters();
 
 	/*************
 	 * main loop *
@@ -213,7 +215,7 @@ bool arcade(Sound* snfx) {
 					}
 				}
 
-			update_background_letters(GetFrameTime());							/* update animating background */
+			update_background_letters(/* GetFrameTime() */);					/* update animating background */
 			UpdateMusicStream(arcade_background_music);							/* update background music */
 			/*------------------------------------------------------------------ */
 

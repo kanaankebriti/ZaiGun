@@ -21,6 +21,7 @@
 
 /* animating background used for arcade mode */
 #define BG_MAX_LETTERS 100														/* letters count for animating background of arcade mode */
+#define BG_LETTERS_VEL .03f														/* shooting velocity */
 #define BG_FONT_MIN 10
 #define BG_FONT_MAX 70
 
