@@ -15,6 +15,14 @@ typedef struct {
 
 particle letters[BG_MAX_LETTERS];
 
+#define SLIDER_HEIGHT 20
+#define SLIDER_WIDTH WIN_W - 15
+#define SLIDER_Y_POS WIN_H - 27
+#define RULER_TXT_W 64				/* ruler texture width */
+#define RULER_TXT_H 64				/* ruler texture height */
+#define RULER_W 34					/* ruler width as it appears on the screen */
+#define RULER_H 34					/* ruler height as it appears on the screen  */
+
 void InitializeLetters() {
 	unsigned char i;
 	float angle, speed;
@@ -133,6 +141,7 @@ bool arcade(Sound* snfx) {
 			26
 		);																		/* fonts dedicated to glyphs on blocks */
 	const char font_w = (BLOCK_SIZE / deffont.baseSize) * deffont.recs->width;
+	static Texture2D ruler_txt;													/* texture for slider ruler */
 
 	/* initilize field blocks*/
 	for (j = 0; j < FIELD_H; j++)
@@ -142,6 +151,8 @@ bool arcade(Sound* snfx) {
 			block[j][i].y_pos = j * BLOCK_SIZE + TOP_MARGIN;
 			block[j][i].val = BLOCK_TYPE_FREE;
 		}
+
+	ruler_txt = LoadTexture(RESOURCE_PATH"ruler.png");
 
 	/* intro countdown */
 	i = INTRO_WAIT;
