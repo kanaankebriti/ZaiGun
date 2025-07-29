@@ -29,6 +29,7 @@
 #define MAX_INTERVAL 4.0f														/* maximum waiting */
 #define MIN_INTERVAL 1.5f														/* minimum waiting */
 #define SCORE_CAP 100000.0f														/* new spawn is score based */
+#define INTRO_WAIT 3															/* game intro countdown in seconds */
 
 /* block fields */
 #define GRIDCOLOR CHARCOAL														/* grid color */

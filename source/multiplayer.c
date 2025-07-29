@@ -2,7 +2,6 @@
 #include "common.h"
 #include "const.h"
 
-static Texture2D ruler = { 0 };	/* Will hold your ruler.png */
 #define SLIDER_HEIGHT 20
 #define SLIDER_WIDTH WIN_W - 15
 #define SLIDER_Y_POS WIN_H - 27
@@ -11,7 +10,7 @@ static Texture2D ruler = { 0 };	/* Will hold your ruler.png */
 #define RULER_W 34					/* ruler width as it appears on the screen */
 #define RULER_H 34					/* ruler height as it appears on the screen  */
 /* slider that illustrates who is winning */
-void draw_slider(short score) {
+void draw_slider(Texture2D ruler_txt, short score) {
 	Rectangle ruler_dst;
 	static const Rectangle ruler_src = { 0, 0, RULER_TXT_W, RULER_TXT_H };
 	static const Vector2 ruler_origin = {20, 20};
@@ -44,7 +43,7 @@ void draw_slider(short score) {
 
 	/* 4) Draw the ruler texture, scaled down */
 	DrawTexturePro(
-		ruler,
+		ruler_txt,
 		ruler_src,
 		ruler_dst,
 		ruler_origin,
@@ -89,6 +88,7 @@ bool multiplayer(Sound* snfx) {
 	const Music multiplayer_background_music = LoadMusicStream(RESOURCE_PATH"4_track_from_heaven.mp3");
 	Color bckg_color;															/* RGB background color */
 	unsigned int psum;															/* sum of all palette values. used to determine if it's empty. */
+	static Texture2D ruler_txt;													/* texture for slider ruler */
 
 	#if defined(__SWITCH__)
 		char cursor_p1_lck = 0;														/* player 1 analog joystick lock mechanism */
@@ -107,7 +107,7 @@ bool multiplayer(Sound* snfx) {
 			26
 		);																		/* fonts dedicated to glyphs on blocks */
 	const char font_w = (BLOCK_SIZE / deffont.baseSize) * deffont.recs->width;
-	ruler = LoadTexture(RESOURCE_PATH"ruler.png");
+	ruler_txt = LoadTexture(RESOURCE_PATH"ruler.png");
 
 	/* initilize field blocks*/
 	/* player 1 */
@@ -127,32 +127,34 @@ bool multiplayer(Sound* snfx) {
 			block_p2[j][i].val = BLOCK_TYPE_FREE;
 		}
 
-	/* intro waiting */
-	/* for (signed char wait = 3; wait >= 0; wait--) {								signed is required by arm64!
+	/* intro countdown */
+	i = INTRO_WAIT;
+	while(i --> 0) {
 		BeginDrawing();
 		ClearBackground(DEFBACKCOLOR);
-		draw frames
+		draw_slider(ruler_txt, score);
+		/* draw frames */
 		draw_frame(field_frame_rect_p1, COLOR_P1);
 		draw_frame(field_frame_rect_p2, COLOR_P2);
-		draw fields
+		/* draw fields */
 		draw_blocks(cursor_pos_p1, block_p1, blkfont, font_w);
 		draw_blocks(cursor_pos_p2, block_p2, blkfont, font_w);
-		draw_cursor(cursor_pos_p1, LEFT_MARGIN_MUL);							draw cursor for player 1
-		draw_cursor(cursor_pos_p2, WIN_W / 2 + LEFT_MARGIN_MUL);				draw cursor for player 2
-		draw countdown
+		draw_cursor(cursor_pos_p1, LEFT_MARGIN_MUL_P1);							/* draw cursor for player 1 */
+		draw_cursor(cursor_pos_p2, LEFT_MARGIN_MUL_P2);							/* draw cursor for player 2 */
+		/* draw countdown */
 		DrawText(
-			TextFormat("%d", wait),
-			WIN_W / 2 - font_w,													horizontal alignment
-			TOP_MARGIN + (FIELD_W * BLOCK_SIZE) / 2 + 100,						vertical alignment
+			TextFormat("%d", i),
+			WIN_W / 2 - font_w,													/* horizontal alignment */
+			TOP_MARGIN + (FIELD_W * BLOCK_SIZE) / 2 + 100,						/* vertical alignment */
 			100,
 			GREEN
 		);
 		EndDrawing();
-		PlaySound(snfx[SNFX_WA]);												play wait sound effect
+		PlaySound(snfx[SNFX_WA]);												/* play wait sound effect */
 		WaitTime(1.f);
 	}
-	PlaySound(snfx[SNFX_EL]);													play elimination sound effect as the game begins!
-	WaitTime(0.5f); */
+	PlaySound(snfx[SNFX_EL]);													/* play elimination sound effect as the game begins! */
+	WaitTime(0.5f);
 
 	select_p1 = spaw_new_row(block_p1, palette_p1);								/* spawn first row for player 1 */
 	select_p2 = spaw_new_row(block_p2, palette_p2);								/* spawn first row for player 2 */
@@ -266,7 +268,7 @@ bool multiplayer(Sound* snfx) {
 			draw_frame(field_frame_rect_p2, COLOR_P2);
 			draw_blocks(cursor_pos_p1, block_p1, blkfont, font_w);
 			draw_blocks(cursor_pos_p2, block_p2, blkfont, font_w);
-			draw_slider(score);
+			draw_slider(ruler_txt, score);
 
 			/*DrawText(TextFormat("G1=%d LX=%f LY=%f RX=%f RY%f", IsGamepadAvailable(0), GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X), GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_Y), GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X), GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_Y)), 0, 0, 28, RED); */
 			/*DrawText(TextFormat("G2=%d LX=%f LY=%f RX=%f RY%f", IsGamepadAvailable(1), GetGamepadAxisMovement(1, GAMEPAD_AXIS_LEFT_X), GetGamepadAxisMovement(1, GAMEPAD_AXIS_LEFT_Y), GetGamepadAxisMovement(1, GAMEPAD_AXIS_RIGHT_X), GetGamepadAxisMovement(1, GAMEPAD_AXIS_RIGHT_Y)), 0, 30, 28, RED); */
@@ -442,7 +444,7 @@ bool multiplayer(Sound* snfx) {
 				draw_blocks(cursor_pos_p2, block_p2, blkfont, font_w);			/* draw field blocks for player 2 */
 				draw_cursor(cursor_pos_p1, LEFT_MARGIN_MUL_P1);					/* draw cursor for player 1 */
 				draw_cursor(cursor_pos_p2, LEFT_MARGIN_MUL_P2);					/* draw cursor for player 2 */
-				draw_slider(score);
+				draw_slider(ruler_txt, score);
 				draw_pause_menu(pause_menu_select);								/* draw pause menu */
 				EndDrawing();
 			}

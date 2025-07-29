@@ -15,5 +15,5 @@ void draw_frame(Rectangle field_rect , Color fcolor) {
 	DrawRectangleRec(
 		field_rect,
 		CHARCOAL
-	);																			/* grid */
+	);																			/* frame background */
 }

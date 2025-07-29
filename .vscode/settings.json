@@ -8,6 +8,7 @@
 		"raylib.h": "c",
 		"common.h": "c",
 		"atomic": "c",
-		"stdatomic.h": "c"
+		"stdatomic.h": "c",
+		"const.h": "c"
 	}
 }

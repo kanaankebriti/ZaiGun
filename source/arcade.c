@@ -143,15 +143,16 @@ bool arcade(Sound* snfx) {
 			block[j][i].val = BLOCK_TYPE_FREE;
 		}
 
-	/* intro waiting */
-	for (select = 3; select >= 0; select--) {									/* note that select variable is used in order to reduce memory usage!*/
+	/* intro countdown */
+	i = INTRO_WAIT;
+	while(i --> 0) {
 		BeginDrawing();
 		ClearBackground(DEFBACKCOLOR);
 		draw_frame(field_frame_rect, CYAN);										/* draw frame around the field */
 		draw_blocks(cursor_pos, block, blkfont, font_w);						/* draw field */
 		draw_cursor(cursor_pos, LEFT_MARGIN);									/* draw cursor for player 1 */
 		DrawText(
-			TextFormat("%d", select),
+			TextFormat("%d", i),
 			LEFT_MARGIN + (FIELD_W * BLOCK_SIZE) / 2 - 2 * font_w,				/* horizontal alignment */
 			TOP_MARGIN + (FIELD_W * BLOCK_SIZE) / 2 + 100,						/* vertical alignment */
 			100,
