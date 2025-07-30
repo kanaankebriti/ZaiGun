@@ -40,13 +40,17 @@
 #define FIELD_W 10																/* number of horizontal blocks */
 #define FIELD_H 20																/* number of vertical blocks */
 #define FIELD_BORDER_WIDTH 7													/* border width around the field */
-#define FRAME_ROUNDNESS .04f													/* frame roundness */
 #define TOP_MARGIN (WIN_H - FIELD_H * BLOCK_SIZE) / 2							/* vertical alignment */
 #define LEFT_MARGIN (WIN_W - FIELD_W * BLOCK_SIZE) / 2							/* horizontal alignment */
 #define LEFT_MARGIN_MUL_P1 (WIN_W / 2 - FIELD_W * BLOCK_SIZE + 2 * BLOCK_SIZE) / 2	/* multiplayer: horizontal alignment + move two blocks to right to have space for selected char */
 #define LEFT_MARGIN_MUL_P2 (WIN_W / 2 + LEFT_MARGIN_MUL_P1)						/* multiplayer: middle of the screen + margin of player 1 */
 #define COLOR_P1 CYAN															/* main color theme use for player 1 */
 #define COLOR_P2 DARKROSE														/* main color theme use for player 2 */
+
+/* frames */
+#define FRAME_ROUNDNESS .04f													/* frame roundness */
+#define FRAME_TYPE_ROUNDED 0
+#define FRAME_TYPE_CUT 1
 
 /* user input commands */
 #define CMD_NULL 0																/* command: nothing! mainly to silence warnings */

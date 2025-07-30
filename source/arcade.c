@@ -141,7 +141,6 @@ bool arcade(Sound* snfx) {
 			26
 		);																		/* fonts dedicated to glyphs on blocks */
 	const char font_w = (BLOCK_SIZE / deffont.baseSize) * deffont.recs->width;
-	static Texture2D ruler_txt;													/* texture for slider ruler */
 
 	/* initilize field blocks*/
 	for (j = 0; j < FIELD_H; j++)
@@ -152,14 +151,12 @@ bool arcade(Sound* snfx) {
 			block[j][i].val = BLOCK_TYPE_FREE;
 		}
 
-	ruler_txt = LoadTexture(RESOURCE_PATH"ruler.png");
-
 	/* intro countdown */
 	i = INTRO_WAIT;
 	while(i --> 0) {
 		BeginDrawing();
 		ClearBackground(DEFBACKCOLOR);
-		draw_frame(field_frame_rect, CYAN);										/* draw frame around the field */
+		draw_frame(field_frame_rect, CYAN, FRAME_TYPE_CUT);						/* draw the frame that is behind the block field */
 		draw_blocks(cursor_pos, block, blkfont, font_w);						/* draw field */
 		draw_cursor(cursor_pos, LEFT_MARGIN);									/* draw cursor for player 1 */
 		DrawText(
@@ -251,20 +248,18 @@ bool arcade(Sound* snfx) {
 
 
 			draw_background_letters(bgfont);									/* draw animating background */
+			draw_frame(field_frame_rect, CYAN, FRAME_TYPE_CUT);					/* draw the frame that is behind the block field */
+			draw_blocks(cursor_pos, block, blkfont, font_w);					/* draw field blocks */
+			draw_cursor(cursor_pos, LEFT_MARGIN);								/* draw cursor */
 
+			/*DrawText(TextFormat("G1=%d LX=%f LY=%f RX=%f RY%f", IsGamepadAvailable(0), GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X), GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_Y), GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X), GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_Y)), 0, 0, 28, RED); */
+			/*DrawText(TextFormat("G2=%d LX=%f LY=%f RX=%f RY%f", IsGamepadAvailable(1), GetGamepadAxisMovement(1, GAMEPAD_AXIS_LEFT_X), GetGamepadAxisMovement(1, GAMEPAD_AXIS_LEFT_Y), GetGamepadAxisMovement(1, GAMEPAD_AXIS_RIGHT_X), GetGamepadAxisMovement(1, GAMEPAD_AXIS_RIGHT_Y)), 0, 30, 28, RED); */
 			/* draw selected character */
 			block_pos.x = LEFT_MARGIN - 100;									/* selected character display position */
 			block_pos.y = (WIN_H - 100) / 2;
 			DrawTextCodepoint(blkfont, select, block_pos, 98, RED );			/* draw selected character */
 			block_pos.x = LEFT_MARGIN + FIELD_W * BLOCK_SIZE + BLOCK_MARGIN + FIELD_BORDER_WIDTH;
 			DrawTextEx(deffont, TextFormat("%ld", score), block_pos, 100, 1, WHITE);/* draw score */
-
-			draw_frame(field_frame_rect, CYAN);									/* draw filed frame */
-			draw_blocks(cursor_pos, block, blkfont, font_w);					/* draw field blocks */
-			draw_cursor(cursor_pos, LEFT_MARGIN);								/* draw cursor */
-
-			/*DrawText(TextFormat("G1=%d LX=%f LY=%f RX=%f RY%f", IsGamepadAvailable(0), GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X), GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_Y), GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X), GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_Y)), 0, 0, 28, RED); */
-			/*DrawText(TextFormat("G2=%d LX=%f LY=%f RX=%f RY%f", IsGamepadAvailable(1), GetGamepadAxisMovement(1, GAMEPAD_AXIS_LEFT_X), GetGamepadAxisMovement(1, GAMEPAD_AXIS_LEFT_Y), GetGamepadAxisMovement(1, GAMEPAD_AXIS_RIGHT_X), GetGamepadAxisMovement(1, GAMEPAD_AXIS_RIGHT_Y)), 0, 30, 28, RED); */
 			EndDrawing();
 			/*---------------------------------------------------------------------- */
 
@@ -410,7 +405,7 @@ bool arcade(Sound* snfx) {
 				ClearBackground(DEFBACKCOLOR);
 				draw_background_letters(bgfont);								/* draw animating background */
 				/* draw */
-				draw_frame(field_frame_rect, CYAN);								/* draw filed frame */
+				draw_frame(field_frame_rect, CYAN, FRAME_TYPE_CUT);				/* draw the frame that is behind the block field */
 				draw_blocks(cursor_pos, block, blkfont, font_w);				/* draw field blocks */
 				draw_cursor(cursor_pos, LEFT_MARGIN);							/* draw cursor */
 				draw_pause_menu(pause_menu_select);								/* draw pause menu */

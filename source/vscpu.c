@@ -210,8 +210,8 @@ bool vscpu(Sound* snfx) {
 			DrawTextCodepoint(blkfont, select_p2, block_pos, 100, COLOR_P2);	/* draw selected character for player 2 */
 
 			/* draw field background */
-			draw_frame(field_frame_rect_p1, COLOR_P1);
-			draw_frame(field_frame_rect_p2, COLOR_P2);
+			draw_frame(field_frame_rect_p1, COLOR_P1, FRAME_TYPE_CUT);
+			draw_frame(field_frame_rect_p2, COLOR_P2, FRAME_TYPE_CUT);
 			draw_blocks(cursor_pos_p1, block_p1, blkfont, font_w);
 			draw_blocks(cursor_pos_p2, block_p2, blkfont, font_w);
 
@@ -390,8 +390,8 @@ bool vscpu(Sound* snfx) {
 				BeginDrawing();
 				ClearBackground(DEFBACKCOLOR);
 				/* draw */
-				draw_frame(field_frame_rect_p1, COLOR_P1);						/* draw filed frame for player 1 */
-				draw_frame(field_frame_rect_p2, COLOR_P2);						/* draw filed frame for player 2 */
+				draw_frame(field_frame_rect_p1, COLOR_P1, FRAME_TYPE_CUT);		/* draw filed frame for player 1 */
+				draw_frame(field_frame_rect_p2, COLOR_P2, FRAME_TYPE_CUT);		/* draw filed frame for player 2 */
 				draw_blocks(cursor_pos_p1, block_p1, blkfont, font_w);			/* draw field blocks for player 1 */
 				draw_blocks(cursor_pos_p2, block_p2, blkfont, font_w);			/* draw field blocks for player 2 */
 				draw_cursor(cursor_pos_p1, LEFT_MARGIN_MUL_P1);					/* draw cursor for player 1 */

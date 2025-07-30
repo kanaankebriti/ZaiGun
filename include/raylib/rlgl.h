@@ -479,11 +479,11 @@ typedef enum {
 /* NOTE 2: Filter is accordingly set for minification and magnification */
 typedef enum {
 	RL_TEXTURE_FILTER_POINT = 0,		/* No filter, just pixel approximation */
-	RL_TEXTURE_FILTER_BILINEAR,		 /* Linear filtering */
+	RL_TEXTURE_FILTER_BILINEAR,			/* Linear filtering */
 	RL_TEXTURE_FILTER_TRILINEAR,		/* Trilinear filtering (linear with mipmaps) */
-	RL_TEXTURE_FILTER_ANISOTROPIC_4X,   /* Anisotropic filtering 4x */
-	RL_TEXTURE_FILTER_ANISOTROPIC_8X,   /* Anisotropic filtering 8x */
-	RL_TEXTURE_FILTER_ANISOTROPIC_16X,  /* Anisotropic filtering 16x */
+	RL_TEXTURE_FILTER_ANISOTROPIC_4X,	/* Anisotropic filtering 4x */
+	RL_TEXTURE_FILTER_ANISOTROPIC_8X,	/* Anisotropic filtering 8x */
+	RL_TEXTURE_FILTER_ANISOTROPIC_16X	/* Anisotropic filtering 16x */
 } rlTextureFilter;
 
 /* Color blending modes (pre-defined) */
@@ -559,28 +559,28 @@ typedef enum {
 /* Framebuffer attachment type */
 /* NOTE: By default up to 8 color channels defined, but it can be more */
 typedef enum {
-	RL_ATTACHMENT_COLOR_CHANNEL0 = 0,	   /* Framebuffer attachment type: color 0 */
-	RL_ATTACHMENT_COLOR_CHANNEL1 = 1,	   /* Framebuffer attachment type: color 1 */
-	RL_ATTACHMENT_COLOR_CHANNEL2 = 2,	   /* Framebuffer attachment type: color 2 */
-	RL_ATTACHMENT_COLOR_CHANNEL3 = 3,	   /* Framebuffer attachment type: color 3 */
-	RL_ATTACHMENT_COLOR_CHANNEL4 = 4,	   /* Framebuffer attachment type: color 4 */
-	RL_ATTACHMENT_COLOR_CHANNEL5 = 5,	   /* Framebuffer attachment type: color 5 */
-	RL_ATTACHMENT_COLOR_CHANNEL6 = 6,	   /* Framebuffer attachment type: color 6 */
-	RL_ATTACHMENT_COLOR_CHANNEL7 = 7,	   /* Framebuffer attachment type: color 7 */
-	RL_ATTACHMENT_DEPTH = 100,			  /* Framebuffer attachment type: depth */
-	RL_ATTACHMENT_STENCIL = 200,			/* Framebuffer attachment type: stencil */
+	RL_ATTACHMENT_COLOR_CHANNEL0 = 0,	/* Framebuffer attachment type: color 0 */
+	RL_ATTACHMENT_COLOR_CHANNEL1 = 1,	/* Framebuffer attachment type: color 1 */
+	RL_ATTACHMENT_COLOR_CHANNEL2 = 2,	/* Framebuffer attachment type: color 2 */
+	RL_ATTACHMENT_COLOR_CHANNEL3 = 3,	/* Framebuffer attachment type: color 3 */
+	RL_ATTACHMENT_COLOR_CHANNEL4 = 4,	/* Framebuffer attachment type: color 4 */
+	RL_ATTACHMENT_COLOR_CHANNEL5 = 5,	/* Framebuffer attachment type: color 5 */
+	RL_ATTACHMENT_COLOR_CHANNEL6 = 6,	/* Framebuffer attachment type: color 6 */
+	RL_ATTACHMENT_COLOR_CHANNEL7 = 7,	/* Framebuffer attachment type: color 7 */
+	RL_ATTACHMENT_DEPTH = 100,			/* Framebuffer attachment type: depth */
+	RL_ATTACHMENT_STENCIL = 200			/* Framebuffer attachment type: stencil */
 } rlFramebufferAttachType;
 
 /* Framebuffer texture attachment type */
 typedef enum {
-	RL_ATTACHMENT_CUBEMAP_POSITIVE_X = 0,   /* Framebuffer texture attachment type: cubemap, +X side */
-	RL_ATTACHMENT_CUBEMAP_NEGATIVE_X = 1,   /* Framebuffer texture attachment type: cubemap, -X side */
-	RL_ATTACHMENT_CUBEMAP_POSITIVE_Y = 2,   /* Framebuffer texture attachment type: cubemap, +Y side */
-	RL_ATTACHMENT_CUBEMAP_NEGATIVE_Y = 3,   /* Framebuffer texture attachment type: cubemap, -Y side */
-	RL_ATTACHMENT_CUBEMAP_POSITIVE_Z = 4,   /* Framebuffer texture attachment type: cubemap, +Z side */
-	RL_ATTACHMENT_CUBEMAP_NEGATIVE_Z = 5,   /* Framebuffer texture attachment type: cubemap, -Z side */
-	RL_ATTACHMENT_TEXTURE2D = 100,		  /* Framebuffer texture attachment type: texture2d */
-	RL_ATTACHMENT_RENDERBUFFER = 200,	   /* Framebuffer texture attachment type: renderbuffer */
+	RL_ATTACHMENT_CUBEMAP_POSITIVE_X = 0,	/* Framebuffer texture attachment type: cubemap, +X side */
+	RL_ATTACHMENT_CUBEMAP_NEGATIVE_X = 1,	/* Framebuffer texture attachment type: cubemap, -X side */
+	RL_ATTACHMENT_CUBEMAP_POSITIVE_Y = 2,	/* Framebuffer texture attachment type: cubemap, +Y side */
+	RL_ATTACHMENT_CUBEMAP_NEGATIVE_Y = 3,	/* Framebuffer texture attachment type: cubemap, -Y side */
+	RL_ATTACHMENT_CUBEMAP_POSITIVE_Z = 4,	/* Framebuffer texture attachment type: cubemap, +Z side */
+	RL_ATTACHMENT_CUBEMAP_NEGATIVE_Z = 5,	/* Framebuffer texture attachment type: cubemap, -Z side */
+	RL_ATTACHMENT_TEXTURE2D = 100,			/* Framebuffer texture attachment type: texture2d */
+	RL_ATTACHMENT_RENDERBUFFER = 200		/* Framebuffer texture attachment type: renderbuffer */
 } rlFramebufferAttachTextureType;
 
 /* Face culling mode */

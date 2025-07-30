@@ -16,7 +16,7 @@ float get_interval_quadratic(int score);
 /*private //void draw_block (int block_x_pos, int block_y_pos, char block_val, Font font, char font_w); */
 void draw_blocks(unsigned char cursor_pos_p1, field block[FIELD_H][FIELD_W], Font blkfont, char font_w);
 void draw_cursor(unsigned char cursor_pos, unsigned short margin_from_left);
-void draw_frame(Rectangle field_rect , Color fcolor);
+void draw_frame(Rectangle field_rect , Color fcolor, unsigned char frame_type);
 void draw_pause_menu(unsigned char pause_menu_cursor);
 void draw_slider(Texture2D ruler_txt, short score);
 char move_cursor(unsigned char cursor_pos, char dir, char steps);
